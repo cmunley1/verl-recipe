@@ -14,9 +14,6 @@
 ## Launch
 
 ```bash
-# 4B model, 8 nodes
 sbatch recipe/nemo_gym/submit_swe_4b_8n_200t.sh
-
-# 30B instruct, 16 nodes
 sbatch recipe/nemo_gym/submit_swe_30b_16n_32k.sh
 ```
