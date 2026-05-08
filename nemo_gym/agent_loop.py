@@ -156,6 +156,11 @@ class NeMoGymAgentLoopManager(AgentLoopManager):
             initial_global_cfg.setdefault("uv_venv_dir", str(nemo_gym_root))
             initial_global_cfg.setdefault("skip_venv_if_present", True)
 
+        _reserved = {"nemo_gym_root", "uses_reasoning_parser", "config_paths"}
+        for k, v in nemo_gym_cfg.items():
+            if k not in _reserved and k not in initial_global_cfg:
+                initial_global_cfg[k] = v
+
         node_ip = ray._private.services.get_node_ip_address()
         with socket.socket() as s:
             s.bind(("", 0))
@@ -368,6 +373,8 @@ def _postprocess_nemo_gym_result(nemo_gym_result: dict, tokenizer) -> dict:
 def _empty_result(nemo_gym_row: dict, tokenizer) -> dict:
     messages = nemo_gym_row.get("responses_create_params", {}).get("input", [])
     raw_prompt = [{"role": m.get("role", "user"), "content": m.get("content", "")} for m in messages]
+    if not raw_prompt:
+        raw_prompt = [{"role": "user", "content": ""}]
     prompt_ids = tokenizer.apply_chat_template(raw_prompt, tokenize=True, add_generation_prompt=False)[-1:]
     dummy_tok = torch.tensor(prompt_ids, dtype=torch.long)
     return {

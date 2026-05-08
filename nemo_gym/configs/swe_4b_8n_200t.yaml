@@ -1,0 +1,33 @@
+nemo_gym:
+  nemo_gym_root: /path/to/Gym
+  uses_reasoning_parser: false
+  config_paths:
+    - /path/to/Gym/responses_api_models/vllm_model/configs/vllm_model_for_training.yaml
+    - /path/to/Gym/responses_api_agents/swe_agents/configs/swebench_openhands_training.yaml
+  swe_agents_train:
+    responses_api_agents:
+      swe_agents:
+        agent_max_turns: 200
+        concurrency: 16
+        openhands_should_log: true
+        swebench_agent_timeout: 1800
+        swebench_tests_timeout: 1200
+        dataset_path: /path/to/swe_swegym_only_with_sifs.jsonl
+        container_formatter:
+          - /path/to/sif/swebench_sweb.eval.x86_64.{instance_id}.sif
+          - /path/to/sif/swegym_sweb.eval.x86_64.{instance_id}.sif
+          - /path/to/sif/r2egym_{instance_id}.sif
+  swe_agents_val:
+    responses_api_agents:
+      swe_agents:
+        agent_max_turns: 200
+        concurrency: 16
+        openhands_should_log: true
+        swebench_agent_timeout: 1800
+        swebench_tests_timeout: 1200
+        dataset_path: /path/to/swe_swegym_only_with_sifs.jsonl
+        container_formatter:
+          - /path/to/sif/swebench_sweb.eval.x86_64.{instance_id}.sif
+          - /path/to/sif/swegym_sweb.eval.x86_64.{instance_id}.sif
+          - /path/to/sif/r2egym_{instance_id}.sif
+  use_absolute_ip: true
